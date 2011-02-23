@@ -1,0 +1,41 @@
+#!/bin/sh
+
+a=60
+n=
+
+help() {
+        cat <<EOF
+Usage:  `basename "$0"` -h | [-i|-n] [-a AGE] DIR [DIR [...]]
+Findet alle Dateien in DIR/archive, die zu alt sind und loescht sie.
+-a	Alter der Datei in Tagen (std: $a)
+-i	Fragt vorher nach (siehe rm)
+-n	Trockenlauf
+EOF
+        exit
+}
+
+[ 0 -lt $# ] || help
+x=`getopt hina: "$@"` || exit 1
+eval set -- $x
+
+while [ 0 -lt $# ]
+do
+	o=$1
+	shift
+	case "$o" in
+	--) break ;;
+	-h) help ;;
+	-a) a=$1 ; shift ;;
+	-i) i=-i ;;
+	-n) n=echo ;;
+	esac
+done
+
+[ 0 -lt $# ] || help
+[ X = X"$a" ] || a="-mtime +$a"
+
+for d
+do
+	find "$d" -name archive -type d -exec sh -c '
+		find "$1" -type f '"$a"' -exec '"$n"' rm '"$i"' -- "{}" \;' -- '{}' \;
+done

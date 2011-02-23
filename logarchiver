@@ -1,0 +1,48 @@
+#!/bin/bash
+
+e='*.log'
+i=
+n=
+p=gzip
+
+help() {
+	cat <<EOF
+  `basename "$0"` -h | [-i|-n] [-e EXP] DIR [DIR [...]]
+Dursucht DIR und dessen Unterverzeichnisse nach Dateien und verschiebt alle,
+die auf den Ausdruck EXP passen nach DIR/archive.
+-e EXP	Ausdruck, der gefunden werden soll (std: "$e")
+-n	Trockenlauf: Zeigt nur die Dateinamen an.
+-i	Fragt nach (siehe mv)
+EOF
+	exit
+}
+
+[ 0 -lt $# ] || help
+x=`getopt hnie: "$@"` || exit 1
+eval set -- $x
+
+while [ 0 -lt $# ]
+do
+	o=$1
+	shift
+	case "$o" in
+	--) break ;;
+	-h) help ;;
+	-e) e=$1 ; shift ;;
+	-n) n=echo ;;
+	-i) i=-i ;;
+	esac
+done
+
+[ 0 -lt $# ] || help
+
+for d
+do
+	find "$d" -name archive -prune -o -type f \( -name "${e}" \) -exec sh -c '
+		if [ X = "X`fuser "$1" 2>/dev/null`" ]
+		then
+			a="`dirname "$1"`/archive"
+			'"$n"' mkdir -p -- "$a"
+			'"$n"' mv '$i' -- "$1" "$a"
+		fi ' -- '{}' \;
+done

@@ -1,0 +1,63 @@
+#!/bin/bash
+
+archiver=`dirname "$0"`/logarchiver
+rotator=`dirname "$0"`/logrotator
+compressor=`dirname "$0"`/logcompressor
+cleaner=`dirname "$0"`/logcleaner
+cmd=
+
+help() {
+	cat <<EOF
+  `basename "$0"` -h | [-a EXE] [-z EXE] [-C EXE] -c CONF
+-c CONF	Konfigurationsdatei
+-a EXE	Archiver (std: ./logarchiver)
+-z EXE	Compressor (std: ./logcompressor)
+-C EXE	Cleaner (std: ./logcleaner)
+-n	Gibt die Befehle aus, die Ausgefuehrt werden wuerden
+EOF
+	exit
+}
+
+x=`getopt hc:a:r:z:C:n "$@"` || exit 1
+eval set -- $x
+
+while [ 0 -lt $# ]
+do
+	o=$1
+	shift
+	case "$o" in
+	--) break ;;
+	-h) help ;;
+	-c) c=$1 ; shift ;;
+	-a) archiver="$1" ; shift ;;
+	-r) rotator="$1" ; shift ;;
+	-z) compressor="$1" ; shift ;;
+	-C) cleaner="$1" ; shift ;;
+	-n) cmd=echo ;;
+	esac
+done
+
+for n in $c ./lmtab ~/.lmtab /etc/lmtab
+do
+	if [ -f "$n" ]
+	then
+		c=$n
+		break
+	fi
+done
+
+# Format: Verzeichnis [Ausdruck[,Ausdruck[,...]] [Aufbewahrungszeit]]
+# Verzeichnisse duerfen nur einmalig Vorkommen
+sed -ne 's/#.*//;/\//p' "$c" | while read dir exp age opts
+do
+	[ X = "X$age" ] || age="-a$age"
+	while [ ! "X." = "X${exp}" ]
+	do
+		e="`basename "${exp}"`"
+		exp="`dirname "${exp}"`"
+		[ X = "X$e" ] || e="-e$e"
+		$cmd $archiver "$e" "$dir"
+		$cmd $compressor "$dir"
+		[ 0 = "$age" ] || $cmd $cleaner "$age" "$dir"
+	done
+done

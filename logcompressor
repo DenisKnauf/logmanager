@@ -1,0 +1,38 @@
+#!/bin/sh
+
+help() {
+	cat <<EOF
+Usage:	`basename "$0"` -h | [-n] DIR [DIR [...]]
+Komprimiert alle Dateien in DIR/archive.
+-n	Trockenlauf
+EOF
+	exit
+}
+
+[ 0 -lt $# ] || help
+x=`getopt he:ngblc: "$@"` || exit 1
+eval set -- $x
+p=gzip
+
+while [ 0 -lt $# ]
+do
+	o=$1
+	shift
+	case "$o" in
+	--) break ;;
+	-h) help ;;
+	-n) n=echo ;;
+	-g) p=gzip ;;
+	-b) p=bzip2 ;;
+	-l) p=lzma ;;
+	-c) p="$1" ; shift ;;
+	esac
+done
+
+[ 0 -lt $# ] || help
+
+for d
+do
+	find "$d" -name archive -type d -exec sh -c '
+		find "$1" -type f ! -name "*.bz2" ! -name "*.gz" ! -name "*.lzma" -exec '"$n"' '"$p"' -- "{}" \;' -- '{}' \;
+done

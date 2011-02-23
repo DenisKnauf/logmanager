@@ -1,0 +1,16 @@
+#
+# Diese Datei sollte ~/.lmtab heiszen.
+#
+
+/opt/jbossmsg/jboss/server/default_4/log *.log 30
+
+# Vorsicht:
+# Keine Angabe der Zeit, wann die Datei entfernt werden soll,
+# bedeutet,  dass sie nach 60 Tagen entfernt wird.
+# Wenn die Datei nie entfernt werden soll,  0 angeben.
+
+#/var/opt/mmp/log/tomcat * 0
+
+# Mehrere Dateipatterns sind ebenso moeglich:
+
+#/var/opt/mmp/log/mmp *.log.*/*.log
