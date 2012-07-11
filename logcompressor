@@ -35,6 +35,6 @@ done
 
 for d
 do
-	find "$d" -name archive -type d -exec sh -c '
-		find "$1" -type f ! -name "*.bz2" ! -name "*.gz" ! -name "*.lzma" ! -name "*.xz" -exec '"$n"' '"$p"' -- "{}" \;' -- '{}' \;
+	find "$d" -name archive -type d -exec sh -c 'empty=
+		find "$1" -type f ! -name "*.bz2" ! -name "*.gz" ! -name "*.lzma" ! -name "*.xz" -exec '"$n"' '"$p"' -- "{$empty}" \;' -- '{}' \;
 done
