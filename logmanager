@@ -14,11 +14,18 @@ help() {
 -z EXE	Compressor (std: ./logcompressor)
 -C EXE	Cleaner (std: ./logcleaner)
 -n	Gibt die Befehle aus, die Ausgefuehrt werden wuerden
+-N	Fuehrt die Unterprozesse mit -n aus
 EOF
 	exit
 }
 
-x=`getopt hc:a:r:z:C:n "$@"` || exit 1
+with_n() {
+	local cmd=$1
+	shift
+	"$cmd" -n "$@"
+}
+
+x=`getopt hc:a:r:z:C:nN "$@"` || exit 1
 eval set -- $x
 
 while [ 0 -lt $# ]
@@ -34,6 +41,7 @@ do
 	-z) compressor="$1" ; shift ;;
 	-C) cleaner="$1" ; shift ;;
 	-n) cmd=echo ;;
+	-N) cmd=with_n ;;
 	esac
 done
 
@@ -61,9 +69,9 @@ do
 	do
 		e="`basename "${exp}"`"
 		exp="`dirname "${exp}"`"
-		[ X = "X$e" ] || e="-e$e"
+		[ X = "X$e" ] || e="-e $e"
 		$cmd $archiver "$e" "$dir"
-		$cmd $compressor "$dir"
-		[ 0 = "$age" ] || $cmd $cleaner "$age" "$dir"
 	done
+	$cmd $compressor "$dir"
+	[ 0 = "$age" ] || $cmd $cleaner "$age" "$dir"
 done
