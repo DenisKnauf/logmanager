@@ -46,6 +46,12 @@ do
 	fi
 done
 
+if [ ! -r "$c" ]
+then
+	echo "No config found." >&2
+	exit 1
+fi
+
 # Format: Verzeichnis [Ausdruck[,Ausdruck[,...]] [Aufbewahrungszeit]]
 # Verzeichnisse duerfen nur einmalig Vorkommen
 sed -ne 's/#.*//;/\//p' "$c" | while read dir exp age opts

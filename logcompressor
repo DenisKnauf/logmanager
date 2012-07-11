@@ -2,15 +2,16 @@
 
 help() {
 	cat <<EOF
-Usage:	`basename "$0"` -h | [-n] DIR [DIR [...]]
+Usage:	`basename "$0"` -h | [-n] [-g|-b|-l|-x|-c PACKER] DIR [DIR [...]]
 Komprimiert alle Dateien in DIR/archive.
 -n	Trockenlauf
+Packer: -g: gzip, -b: bzip2, -l: lzma, -x: xz, -c PACKER: einen anderen.
 EOF
 	exit
 }
 
 [ 0 -lt $# ] || help
-x=`getopt he:ngblc: "$@"` || exit 1
+x=`getopt he:ngblxc: "$@"` || exit 1
 eval set -- $x
 p=gzip
 
@@ -25,6 +26,7 @@ do
 	-g) p=gzip ;;
 	-b) p=bzip2 ;;
 	-l) p=lzma ;;
+	-x) p=xz ;;
 	-c) p="$1" ; shift ;;
 	esac
 done
@@ -34,5 +36,5 @@ done
 for d
 do
 	find "$d" -name archive -type d -exec sh -c '
-		find "$1" -type f ! -name "*.bz2" ! -name "*.gz" ! -name "*.lzma" -exec '"$n"' '"$p"' -- "{}" \;' -- '{}' \;
+		find "$1" -type f ! -name "*.bz2" ! -name "*.gz" ! -name "*.lzma" ! -name "*.xz" -exec '"$n"' '"$p"' -- "{}" \;' -- '{}' \;
 done
