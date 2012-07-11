@@ -28,7 +28,7 @@ do
 	case "$o" in
 	--) break ;;
 	-h) help ;;
-	-e) e=$1 ; shift ;;
+	-e) e="$1" ; shift ;;
 	-n) n=echo ;;
 	-i) i=-i ;;
 	esac
