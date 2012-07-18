@@ -3,7 +3,6 @@
 e='*.log'
 i=
 n=
-p=gzip
 
 help() {
 	cat <<EOF
@@ -17,32 +16,31 @@ EOF
 	exit
 }
 
-[ 0 -lt $# ] || help
-x=`getopt hnie: "$@"` || exit 1
-eval set -- $x
-
-while [ 0 -lt $# ]
+while getopts hnie: o
 do
-	o=$1
-	shift
 	case "$o" in
-	--) break ;;
-	-h) help ;;
-	-e) e="$1" ; shift ;;
-	-n) n=echo ;;
-	-i) i=-i ;;
+	h) help ;;
+	e) e="$OPTARG" ;;
+	n) n=echo ;;
+	i) i=-i ;;
+	*) help ;;
 	esac
 done
+shift $(($OPTIND-1))
 
-[ 0 -lt $# ] || help
+if ! [ 0 -lt $# ]
+then
+	echo "Error: DIR expected"
+	help
+fi
 
 for d
 do
-	find "$d" -name archive -prune -o -type f \( -name "${e}" \) -exec sh -c '
+	find "${d}" -name archive -prune -o -type f \( -name "${e}" \) -exec sh -c '
 		if [ X = "X`fuser "$1" 2>/dev/null`" ]
 		then
 			a="`dirname "$1"`/archive"
-			'"$n"' mkdir -p -- "$a"
-			'"$n"' mv '$i' -- "$1" "$a"
+			'"${n}"' mkdir -p -- "$a"
+			'"${n}"' mv '$i' -- "$1" "$a"
 		fi ' -- '{}' \;
 done

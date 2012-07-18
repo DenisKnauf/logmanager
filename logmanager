@@ -25,27 +25,23 @@ with_n() {
 	"$cmd" -n "$@"
 }
 
-x=`getopt hc:a:r:z:C:nN "$@"` || exit 1
-eval set -- $x
-
-while [ 0 -lt $# ]
+while getopts hc:a:r:z:C:nN o
 do
-	o=$1
-	shift
 	case "$o" in
-	--) break ;;
-	-h) help ;;
-	-c) c=$1 ; shift ;;
-	-a) archiver="$1" ; shift ;;
-	-r) rotator="$1" ; shift ;;
-	-z) compressor="$1" ; shift ;;
-	-C) cleaner="$1" ; shift ;;
-	-n) cmd=echo ;;
-	-N) cmd=with_n ;;
+	h) help ;;
+	c) c="$OPTARG" ;;
+	a) archiver="$OPTARG" ;;
+	r) rotator="$OPTARG" ;;
+	z) compressor="$OPTARG" ;;
+	C) cleaner="$OPTARG" ;;
+	n) cmd=echo ;;
+	N) cmd=with_n ;;
+	*) help ;;
 	esac
 done
+shift $(($OPTIND-1))
 
-for n in $c ./lmtab ~/.lmtab /etc/lmtab
+for n in "$c" ./lmtab ~/.lmtab /etc/lmtab
 do
 	if [ -f "$n" ]
 	then
@@ -60,7 +56,7 @@ then
 	exit 1
 fi
 
-# Format: Verzeichnis [Ausdruck[,Ausdruck[,...]] [Aufbewahrungszeit]]
+# Format: Verzeichnis [Ausdruck[/Ausdruck[,...]] [Aufbewahrungszeit]]
 # Verzeichnisse duerfen nur einmalig Vorkommen
 sed -ne 's/#.*//;/\//p' "$c" | while read dir exp age opts
 do
@@ -69,8 +65,7 @@ do
 	do
 		e="`basename "${exp}"`"
 		exp="`dirname "${exp}"`"
-		[ X = "X$e" ] || e="-e $e"
-		$cmd $archiver "$e" "$dir"
+		$cmd $archiver -e "$e" "$dir"
 	done
 	$cmd $compressor "$dir"
 	[ 0 = "$age" ] || $cmd $cleaner "$age" "$dir"

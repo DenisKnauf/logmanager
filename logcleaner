@@ -14,22 +14,17 @@ EOF
         exit
 }
 
-[ 0 -lt $# ] || help
-x=`getopt hina: "$@"` || exit 1
-eval set -- $x
-
-while [ 0 -lt $# ]
+while getopts hina: o
 do
-	o=$1
-	shift
 	case "$o" in
-	--) break ;;
-	-h) help ;;
-	-a) a=$1 ; shift ;;
-	-i) i=-i ;;
-	-n) n=echo ;;
+	-) break ;;
+	h) help ;;
+	a) a="$OPTARG" ; shift ;;
+	i) i=-i ;;
+	n) n=echo ;;
 	esac
 done
+shift $(($OPTIND-1))
 
 [ 0 -lt $# ] || help
 [ X = X"$a" ] || a="-mtime +$a"
