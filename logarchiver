@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 e='*.log'
 i=
@@ -26,7 +26,7 @@ do
 	*) help ;;
 	esac
 done
-shift $(($OPTIND-1))
+shift `expr $OPTIND - 1`
 
 if ! [ 0 -lt $# ]
 then

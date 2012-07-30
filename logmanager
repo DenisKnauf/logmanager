@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 archiver=`dirname "$0"`/logarchiver
 rotator=`dirname "$0"`/logrotator
@@ -39,7 +39,7 @@ do
 	*) help ;;
 	esac
 done
-shift $(($OPTIND-1))
+shift `expr $OPTIND - 1`
 
 for n in "$c" ./lmtab ~/.lmtab /etc/lmtab
 do

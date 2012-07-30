@@ -24,7 +24,7 @@ do
 	n) n=echo ;;
 	esac
 done
-shift $(($OPTIND-1))
+shift `expr $OPTIND - 1`
 
 [ 0 -lt $# ] || help
 [ X = X"$a" ] || a="-mtime +$a"

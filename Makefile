@@ -1,5 +1,5 @@
 
-logmanager.tar: logmanager logarchiver logcompressor logcleaner Makefile lmtab.example
+logmanager.tar: logmanager logarchiver logcompressor logcleaner Makefile lmtab.example README.md
 	pax -w -s '!^!logmanager/!' -f $@ -- $^
 
 %.tar.gz: %.tar

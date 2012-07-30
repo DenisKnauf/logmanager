@@ -25,7 +25,7 @@ do
 	-c) p="$OPTARG" ;;
 	esac
 done
-shift $(($OPTIND-1))
+shift `expr $OPTIND - 1`
 
 [ 0 -lt $# ] || help
 
