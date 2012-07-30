@@ -20,7 +20,7 @@ testdir/.lmtab: testdir
 
 testdir/.prepare: testdir testdir/.lmtab
 	touch $</aaaaaaaaaaaaa.log
-	for f in `seq 1 10` ; do touch $</logfile$$f.log || exit 1 ; done
+	for f in `seq 1 10` ; do touch $</"logfile-$$f-`date +%Y%m%d%H%M%S`.log" || exit 1 ; done
 	touch $</no_log
 	touch $</no.log.txt
 	touch $@
