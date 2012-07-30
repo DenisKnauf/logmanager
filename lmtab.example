@@ -2,6 +2,9 @@
 # Diese Datei sollte ~/.lmtab heiszen.
 #
 
+# Variablen, etwa damit fuser gefunden werden kann.
+PATH=${PATH}:/usr/sbin
+
 /opt/jbossmsg/jboss/server/default_4/log *.log 30
 
 # Vorsicht:
