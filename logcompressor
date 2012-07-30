@@ -15,14 +15,14 @@ p=gzip
 while getopts he:ngblxc: o
 do
 	case "$o" in
-	--) break ;;
-	-h) help ;;
-	-n) n=echo ;;
-	-g) p=gzip ;;
-	-b) p=bzip2 ;;
-	-l) p=lzma ;;
-	-x) p=xz ;;
-	-c) p="$OPTARG" ;;
+	-) break ;;
+	h) help ;;
+	n) n=echo ;;
+	g) p=gzip ;;
+	b) p=bzip2 ;;
+	l) p=lzma ;;
+	x) p=xz ;;
+	c) p="$OPTARG" ;;
 	esac
 done
 shift `expr $OPTIND - 1`

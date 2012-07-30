@@ -28,6 +28,13 @@ do
 done
 shift `expr $OPTIND - 1`
 
+if fuser "$0"
+then :
+else
+	echo "fuser not found or does not work! logarchiver won't to destroy any files, so exit."
+	exit 1
+fi
+
 if [ 0 -ge $# ]
 then
 	echo "Error: DIR expected"

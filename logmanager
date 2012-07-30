@@ -22,6 +22,7 @@ EOF
 with_n() {
 	__cmd=$1
 	shift
+	echo "$__cmd" -n "$@"
 	"$__cmd" -n "$@"
 }
 
@@ -41,7 +42,7 @@ do
 done
 shift `expr $OPTIND - 1`
 
-for n in "$c" ./lmtab ~/.lmtab /etc/lmtab
+for n in "$c" ./lmtab "$HOME/.lmtab" /etc/lmtab
 do
 	if [ -f "$n" ]
 	then
