@@ -20,9 +20,9 @@ EOF
 }
 
 with_n() {
-	local cmd=$1
+	__cmd=$1
 	shift
-	"$cmd" -n "$@"
+	"$__cmd" -n "$@"
 }
 
 while getopts hc:a:r:z:C:nN o
@@ -71,8 +71,8 @@ do
 	do
 		e="`basename "${exp}"`"
 		exp="`dirname "${exp}"`"
-		$cmd $archiver -e "$e" "$dir"
+		$cmd $archiver -e "$e" -- "$dir"
 	done
-	$cmd $compressor "$dir"
-	[ 0 = "$age" ] || $cmd $cleaner "$age" "$dir"
+	$cmd $compressor -- "$dir"
+	[ 0 = "$age" ] || $cmd $cleaner "$age" -- "$dir"
 done

@@ -22,6 +22,9 @@ do
 	a) a="$OPTARG" ; shift ;;
 	i) i=-i ;;
 	n) n=echo ;;
+	*) echo "Unknown Option: $o" >&2
+		help
+		;;
 	esac
 done
 shift `expr $OPTIND - 1`
