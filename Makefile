@@ -27,6 +27,6 @@ testdir/.prepare: testdir testdir/.lmtab
 .PHONY: testdir/.prepare
 
 test: testdir/.prepare testdir/.lmtab
-	cd testdir ; ../logmanager -nc .lmtab
-	cd testdir ; ../logmanager -Nc .lmtab
-	cd testdir ; ../logmanager -c .lmtab
+	cd testdir ; env -i HOME="$$HOME" ../logmanager -nc .lmtab
+	cd testdir ; env -i HOME="$$HOME" ../logmanager -Nc .lmtab
+	cd testdir ; env -i HOME="$$HOME" ../logmanager -c .lmtab

@@ -8,13 +8,14 @@ cmd=
 
 help() {
 	cat <<EOF
-  `basename "$0"` -h | [-a EXE] [-z EXE] [-C EXE] -c CONF
--c CONF	Konfigurationsdatei
+  `basename "$0"` -h | [-a EXE] [-z EXE] [-C EXE] [-c CONF]
+-c CONF	Config file (std: ./lmtab ~/.lmtab /etc/lmtab (first come first serve)
 -a EXE	Archiver (std: ./logarchiver)
 -z EXE	Compressor (std: ./logcompressor)
 -C EXE	Cleaner (std: ./logcleaner)
--n	Gibt die Befehle aus, die Ausgefuehrt werden wuerden
--N	Fuehrt die Unterprozesse mit -n aus
+-n	Dummy mode: prints what will called if not dummy.
+-N	Calls archiver, compressor and cleaner in dummy mode (-n).
+-h  Prints this.
 EOF
 	exit
 }
@@ -57,14 +58,15 @@ then
 	exit 1
 fi
 
+# Read variables from config-file and export it as process variables.
 eval `sed -ne '
 	s/#.*//;s/'\''/'"'\\\\\''"'/g;
 	s/\${\([a-zA-Z][0-9a-zA-Z_]*\)}/'\''"$\1"'\''/;
-	s/^\([a-zA-Z_][0-9a-zA-Z_]*\)=\(.*\)/\1='\''\2'\''/p
+	s/^\([a-zA-Z_][0-9a-zA-Z_]*\)=\(.*\)/\1='\''\2'\''; export \1/p
 ' < "$c"`
 
-# Format: Verzeichnis [Ausdruck[/Ausdruck[,...]] [Aufbewahrungszeit]]
-# Verzeichnisse duerfen nur einmalig Vorkommen
+# Format: Directory [Expression[/Expression[/...]]] [retention time]
+# Directories must be uniq!
 sed -ne 's/#.*//;s/^[a-zA-Z_][0-9a-zA-Z_]*=.*//;/\//p' "$c" | while read dir exp age opts
 do
 	[ X = "X$age" ] || age="-a$age"

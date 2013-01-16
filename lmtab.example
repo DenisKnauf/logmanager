@@ -1,19 +1,22 @@
 #
-# Diese Datei sollte ~/.lmtab heiszen.
+# This file should be named ~/.lmtab
 #
 
-# Variablen, etwa damit fuser gefunden werden kann.
+# Variables are possible. For example PATH, because fuser can't be found without it.
 PATH=${PATH}:/usr/sbin
 
-/opt/jbossmsg/jboss/server/default_4/log *.log 30
+# example:
+# archive all files:
+# * in /opt/appsrv/jboss/server/cms/log
+# * named *.log
+# * retention for 30 days
+#/opt/appsrv/jboss/server/cms/log *.log 30
 
-# Vorsicht:
-# Keine Angabe der Zeit, wann die Datei entfernt werden soll,
-# bedeutet,  dass sie nach 60 Tagen entfernt wird.
-# Wenn die Datei nie entfernt werden soll,  0 angeben.
+# Attantion:
+# No given time ("") means default retention time (60 days!).
+# If you want to hold these files forever, say "0".
+#/opt/webserver/log * 0
 
-#/var/opt/mmp/log/tomcat * 0
-
-# Mehrere Dateipatterns sind ebenso moeglich:
-
-#/var/opt/mmp/log/mmp *.log.*/*.log
+# / will be used as separator.
+# More than one pattern in one directory.
+#/opt/dbsrc/log *.log.*/*.log

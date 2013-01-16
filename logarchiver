@@ -7,11 +7,10 @@ n=
 help() {
 	cat <<EOF
   `basename "$0"` -h | [-i|-n] [-e EXP] DIR [DIR [...]]
-Dursucht DIR und dessen Unterverzeichnisse nach Dateien und verschiebt alle,
-die auf den Ausdruck EXP passen nach DIR/archive.
--e EXP	Ausdruck, der gefunden werden soll (std: "$e")
--n	Trockenlauf: Zeigt nur die Dateinamen an.
--i	Fragt nach (siehe mv)
+Look for files in DIR and his subdirs named like EXP and moves them to DIR/archive.
+-e EXP	File must have this expression (std: "$e").
+-n	Dummy mode. Shows files, which will be moved if not dummy mode.
+-i	Asks you to move (see also mv)
 EOF
 	exit
 }
@@ -28,7 +27,7 @@ do
 done
 shift `expr $OPTIND - 1`
 
-if fuser "$0" >/dev/null 2>/dev/null
+if ( fuser "$0" >/dev/null 2>/dev/null )
 then :
 else
 	echo "fuser not found or does not work! logarchiver won't to destroy any files, so exit."
