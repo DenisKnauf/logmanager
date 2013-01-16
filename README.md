@@ -1,3 +1,50 @@
+Excuse, no english help text, yet.
+But see lmtab.example for an example.
+
+English:
+
+Logmanager
+==========
+
+Dependencies
+------------
+
+You need a posix-shell and fuser.
+
+Install
+-------
+
+Untar archive or checkout repository.
+You only need one logmanager per machine, all users can use this at the same time.
+
+It is not important to add it to PATH or move files to /usr/local/bin or something like that.
+
+Per user you need the configfile `~/.lmtab`. See also `lmtab.example`.
+
+Everytime you change something, you should run a test:
+
+	env -i ./logmanager -N
+
+This will do nothing, but shows, what will happen.
+
+Attantion: Also if this command will not fail, it is possible, that logmanager as cronjob will fail.
+You should test logmanager as cronjob with testfiles first.
+If it works, you can use logmanager.
+Possible errors are: fuser not found. You need changes to `~/.lmtab` for setting PATH.
+
+Cronjob
+-------
+
+It is enough to add logmanager to crontab as user, you will run it:
+
+	0 3 * * * exec /path/to/logmanager
+
+This will run logmanager everytime at 3:00. It will use his `~/.lmtab`.
+
+-------------------------------------------------------------------------------
+
+Deutsch:
+
 Logmanager
 ==========
 
@@ -9,7 +56,7 @@ siehe dazu `lmtab.example`.
 
 Tests werden bei jeder Änderung empfohlen:
 
-  # env -i ./logmanager -N
+	env -i ./logmanager -N
 
 Es sollten die meisten Umgebungsvariablenprobleme dadurch entdeckt
 werden können.  Siehe hierzu das `fuser`-Problem weiter unten.
